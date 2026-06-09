@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:4200/");
@@ -75,11 +75,21 @@ test("locating parent element", async ({ page }) => {
     .filter({ hasText: "Sign in" })
     .getByRole("textbox", { name: "Email" })
     .click();
-  
+
   //not really a recommended method
   await page
     .locator(':text-is("Using the Grid")')
     .locator("..")
     .getByRole("textbox", { name: "Email" })
     .click();
+});
+
+test("Reusing the locators", async ({ page }) => {
+  const basicForm = page.locator("nb-card").filter({ hasText: "Basic form" });
+  const emailField = basicForm.getByRole("textbox", { name: "Email" });
+  const passwordField = basicForm.getByRole("textbox", { name: "Password" });
+  await emailField.fill("bhoj@gmail.com");
+  await passwordField.fill("hello");
+  await basicForm.getByRole("button", { name: "Submit" }).click();
+  await expect(emailField).toHaveValue("bhoj@gmail.com");
 });
