@@ -20,11 +20,16 @@ test("Locator syntax rules", async ({ page }) => {
   page.locator('[placeholder="Email"]');
 
   //by text
-   page.locator(':text("Forms")').click();
+  page.locator(':text("Forms")').click();
 
   //by exact text match
-   page.locator(':text-is("Forms")').click();
+  page.locator(':text-is("Forms")').click();
 });
 
-
-
+test("User facing locators", async ({ page }) => {
+  await page.getByRole("textbox", { name: "Jane Doe" }).click();
+  await page.getByRole("button", { name: "Send" }).click();
+  await page.getByTitle("IoT Dashboard").click();
+  await page.getByLabel("Email").first().click();
+  await page.getByTestId("sign-in-button").click();
+});
