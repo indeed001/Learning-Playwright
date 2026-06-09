@@ -1,18 +1,30 @@
-import { test, expect } from '@playwright/test';
+import { test } from "@playwright/test";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  
-  await expect(page).toHaveTitle(/Playwright/);
+test.beforeEach(async ({ page }) => {
+  await page.goto("http://localhost:4200/");
+  await page.getByText("Forms").click();
+  await page.getByText("Form Layouts").click();
 });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test("Locator syntax rules", async ({ page }) => {
+  //by tag name
+  page.locator("input");
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  //by Id
+  page.locator("#inputEmail1");
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  //by Class
+  page.locator(".shape-rectangle");
+
+  //by attribute
+  page.locator('[placeholder="Email"]');
+
+  //by text
+   page.locator(':text("Forms")').click();
+
+  //by exact text match
+   page.locator(':text-is("Forms")').click();
 });
+
+
+
