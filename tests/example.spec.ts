@@ -115,3 +115,28 @@ test("extracting values", async ({ page }) => {
   const placeHolderValue = await emailField.getAttribute("Placeholder");
   expect(placeHolderValue).toEqual("Email");
 });
+
+test("Assertions", async ({ page }) => {
+  //general assertions (we don't use await here and doesn't wait any sec)
+  const value = 5;
+  expect(value).toEqual(5);
+  const submitButtonText = await page
+    .locator("nb-card")
+    .filter({ hasText: "Basic form" })
+    .getByRole("button")
+    .textContent();
+  expect(submitButtonText).toEqual("Submit");
+
+  //locator assertions (waits for 5secs for the element to be available)
+  const submitButton = page
+    .locator("nb-card")
+    .filter({ hasText: "Basic form" })
+    .getByRole("button");
+
+  await expect(submitButton).toHaveText("Submit");
+
+  //soft assertion(even if the assertion fails the test execution continues)
+  //not a good practice to use soft assertions
+  await expect.soft(submitButton).toHaveText("Submit5");
+  await submitButton.click();
+});
