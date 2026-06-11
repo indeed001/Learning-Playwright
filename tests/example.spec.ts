@@ -91,5 +91,27 @@ test("Reusing the locators", async ({ page }) => {
   await emailField.fill("bhoj@gmail.com");
   await passwordField.fill("hello");
   await basicForm.getByRole("button", { name: "Submit" }).click();
-  await expect(emailField).toHaveValue("bhoj@gmail.com");
+  await expect(emailField).toHaveValue("bhoj@gmail.com ");
+});
+
+test("extracting values", async ({ page }) => {
+  // single test value
+  const basicForm = page.locator("nb-card").filter({ hasText: "Basic form" });
+  const buttonText = await basicForm.locator("button").textContent();
+  expect(buttonText).toEqual("Submit");
+
+  //all text values
+  const radioTexts = await page.locator("nb-radio").allTextContents();
+  expect(radioTexts).toContain("Option 1");
+
+  //input value
+  const emailField = basicForm.getByRole("textbox", { name: "Email" });
+  await emailField.fill("bhojraj@gmail.com");
+  //textbox me se input ki value nikalne ke liye inputValue() fucntion use krte hai
+  //textContent() use krenge tou value nhi milegi
+  const email = await emailField.inputValue();
+  expect(email).toEqual("bhojraj@gmail.com");
+
+  const placeHolderValue = await emailField.getAttribute("Placeholder");
+  expect(placeHolderValue).toEqual("Email");
 });
