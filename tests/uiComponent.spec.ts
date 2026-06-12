@@ -107,3 +107,24 @@ test("tooltip", async ({ page }) => {
   const tooltip = await page.locator("nb-tooltip").textContent();
   expect(tooltip).toEqual("This is a tooltip");
 });
+
+test("dialog", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  //agar browser based dialog hai tou listner set krna padhta hai jo ki accept hota hai dialog open hone par
+  page.on("dialog", (dialog) => {
+    expect(dialog.message()).toEqual("Are you sure you want to delete?");
+    dialog.accept();
+  });
+
+  await page
+    .getByRole("table")
+    .locator("tr", { hasText: "mdo@gmail.com" })
+    .locator(".nb-trash")
+    .click();
+
+  await expect(page.locator("table tr").first()).not.toHaveText(
+    "mdo@gmail.com"
+  );
+});
