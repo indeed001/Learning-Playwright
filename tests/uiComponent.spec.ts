@@ -92,3 +92,18 @@ test("list and dropdowns", async ({ page }) => {
     if (theme != "Corporate") await dropDownMenu.click();
   }
 });
+
+test("tooltip", async ({ page }) => {
+  await page.getByText("Modal & Overlays").click();
+  await page.getByText("Tooltip").click();
+
+  const toolTipCard = page
+    .locator("nb-card")
+    .filter({ hasText: "Tooltip Placements" });
+  await toolTipCard.getByRole("button", { name: "TOP" }).hover();
+
+  page.getByRole("tooltip"); //if you have a role tooltip created
+
+  const tooltip = await page.locator("nb-tooltip").textContent();
+  expect(tooltip).toEqual("This is a tooltip");
+});
