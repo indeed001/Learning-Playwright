@@ -47,3 +47,18 @@ test.describe("Form Layout Page", () => {
     expect(radioStatus).toBeFalsy();
   });
 });
+
+test("checkbox", async ({ page }) => {
+  await page.getByText("Modal & Overlays").click();
+  await page.getByText("Toastr").click();
+  await page
+    .getByRole("checkbox", { name: "Hide on click" })
+    .uncheck({ force: true });
+  const allBoxes = page.getByRole("checkbox");
+  const allBoxesArray = await allBoxes.all();
+
+  for (const boxes of allBoxesArray) {
+    await boxes.check({ force: true });
+    expect(boxes.isChecked()).toBeTruthy();
+  }
+});
