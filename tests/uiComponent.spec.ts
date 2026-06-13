@@ -128,3 +128,45 @@ test("dialog", async ({ page }) => {
     "mdo@gmail.com"
   );
 });
+
+test("web tables", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  //get row by any text in the row
+  const targetRow = page.getByRole("row", { name: "twitter@outlook.com" });
+  await targetRow.locator(".nb-edit").click();
+  await targetRow.getByRole("textbox", { name: "Age" }).fill("25");
+  await targetRow.locator(".nb-checkmark").click();
+
+  //get the row based on the value in the specific column
+  await page.locator(".ng2-smart-pagination-nav").getByText("2").click();
+  const targetRowById = page
+    .getByRole("row", { name: "11" })
+    .filter({ has: page.locator("td").nth(1).getByText("11") });
+  await targetRowById.locator(".nb-edit").click();
+  // await targetRowById
+  //   .getByRole("textbox", { name: "E-mail" })
+  //   .fill("bhoju@gmail.com");
+  await page
+    .locator("input-editor")
+    .getByPlaceholder("E-mail")
+    .fill("bhoju@gmail.com");
+  await page.locator(".nb-checkmark").click();
+  await expect(targetRowById.locator("td").nth(5)).toHaveText(
+    "bhoju@gmail.com"
+  );
+
+  await page
+    .locator("input-filter")
+    .getByRole("textbox", { name: "Age" })
+    .fill("20");
+
+  await page.waitForTimeout(500);
+  const rows = page.locator("tbody").getByRole("row");
+  for (const row of await rows.all()) {
+    const age = await row.locator("td").nth(6).textContent();
+    console.log(age, "-Age");
+    expect(age).toEqual("20");
+  }
+});
